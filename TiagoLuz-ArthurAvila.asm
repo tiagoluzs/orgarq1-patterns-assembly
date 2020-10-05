@@ -47,6 +47,12 @@ contabilizaLoop:
 	bgt $t3, $t4, contabilizaLoopFinalizado # sai do loop
 
 
+	# logica da contabilização dos padrões
+
+
+
+	# fim da logica da contabilização dos padrões
+
 
 	addiu $t1, $t1, 1	# incrementa contador $t1 posicaoDados
 
