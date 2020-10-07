@@ -59,6 +59,14 @@ contabilizaLoop:
 
 	# fim da logica da contabilização dos padrões
 
+	addi $sp, $sp, 4
+	lw $t1, 0($sp)
+	
+	la $t2, contabilizaPadrao
+	lw $t3, 0($t2)
+	add $t3, $t3, $t1 
+	sw  $t2, 0($t3) 
+
 	addiu $t1, $t1, 1	# incrementa contador $t1 posicaoDados
 	
 	la $t2, posicaoDados 	# endereco de memoria de posicaoDados
@@ -78,19 +86,6 @@ encontraPadrao:
 	addi $sp, $sp, -4	# cria uma entrada na pilha
 	sw $ra, 0 ($sp)		# salva na pilha endereço de retorno do ra
 	
-	jal bar 
-	
-	move  $a0, $t4 	#debug
-	jal printnum	#debug
-	
-	jal nl	#debug
-	
-	move  $a0, $t6		#debug
-	jal printnum	#debug
-	
-	jal nl	#debug
-	
-	
 	# busca valor do vetorDados na posicao posDados
 	li $t1, 4
 	mul $t9, $t1, $t4 	# $t2 <- i*4
@@ -99,20 +94,8 @@ encontraPadrao:
 	
 	# busca valor do verPadrao na posicao posPadrao
 	mul $t8, $t1, $t6 	# $t2 <- i*4
-	addu $t8, $t6 , $t5 
+	addu  $t8, $t8 , $t5 
 	lw $t8,0($t8) # valor do vetor na posicao da chamada
-	
-	
-	move  $a0, $t2 	#debug
-	jal printnum	#debug
-	
-	jal nl	#debug
-	
-	move  $a0, $t8		#debug
-	jal printnum	#debug
-	
-	#j encerra 
-	
 	
 	bne $t9, $t8, retornaZero
 	addiu $t1, $t7, -1 
@@ -120,15 +103,16 @@ encontraPadrao:
 	
 	addi $sp, $sp, -20	# cria 5 entradas na pilha
 	sw $t3, 0 ($sp)		# define endereco do vetor de dados
-	addiu $t4, $t4, 1
+	addiu  $t4, $t4, 1
 	sw $t4, 4 ($sp)		# define posicaoDados
 	sw $t5, 8 ($sp)		# define endereco do vetor de padrao
 	addiu $t6, $t6, 1
+	
 	sw $t6, 12 ($sp)	# define como zero a posição inicial da chamada
 	sw $t7, 16 ($sp)	# define o tamanho do vetor padrao
 	jal encontraPadrao	# chamada para encontraPadrao
-	
 	lw $t1, 0 ($sp)		# carrega último $ra da pilha
+	addi $sp, $sp, 4
 	jr $t1			# retorna
 	
 retornaZero: 
@@ -226,15 +210,12 @@ encerra:
 	syscall
 
 .data
-
-VetorDados: .space 200		# vetor com 50 posicoes de 4 bytes => 50 * 4 bytes = 200
-TamVetorDados: .word 0
 VetorPadrao: .space 20		# vetor com 5 posicoes de 4 bytes => 5 * 4 bytes = 20
 TamVetorPadrao: .word 0
-
+VetorDados: .space 200		# vetor com 50 posicoes de 4 bytes => 50 * 4 bytes = 200
+TamVetorDados: .word 0
 posicaoDados: .word 0		# variavel de controle
 contabilizaPadrao: .word 0	# contador de padroes localizados
-
 BREAK: .asciiz "======"
 NL: .asciiz "\n"
 F1: .asciiz "\n ========================================== \n\n\nVetor de dados \n"
