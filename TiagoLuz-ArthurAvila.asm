@@ -118,11 +118,10 @@ encontraPadrao:
 	sw $t5, 16($sp) 	# TamVetorPadrao
 	jal encontraPadrao
 	
-	lw $t1, 0($sp)		# carrega valor da pilha
-	addi $sp, $sp, 4 	# reposiciona $sp
-	jr $t1
+	lw $t1, 0 ($sp)		# carrega último $ra da pilha
+	addi $sp, $sp, -4
+	jr $t1	
 	 		
-	
 retornaZero: 
 	lw $t1, 0 ($sp)		# carrega último $ra da pilha
 	addi $sp, $sp, -4
@@ -149,8 +148,8 @@ contabilizaLoopFinalizado:
 carregavetor:
 
 	lw $t4, 0 ($sp)   # le endereco inicial do vetor
-#	addi $sp, $sp, 4  # reposiciona $sp
-#	addi $sp, $sp, -4	# cria uma entrada na pilha
+	addi $sp, $sp, 4  # reposiciona $sp
+	addi $sp, $sp, -4	# cria uma entrada na pilha
 	sw $ra, 0 ($sp)		# salva na pilha endereço de retorno do ra
 
 	la  $a0, F3		# imprime F3
