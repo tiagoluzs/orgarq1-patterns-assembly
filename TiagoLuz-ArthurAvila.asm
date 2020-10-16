@@ -1,54 +1,42 @@
 .text
 .globl main
 main:
-  	
   	# vetor de dados
 	la  $a0, F1
 	jal print
 	la $t0, VetorDados	# endereço da posicao inicial do vetor de dados
-	addi $sp, $sp, -4	# cria uma entrada na pilha
+	addiu $sp, $sp, -4	# cria uma entrada na pilha
 	sw $t0, 0 ($sp)		# endereço da posicao inicial do vetor de dados na pilha
 	jal carregavetor	# chama funcao para carrega vetor
 
 	lw $t0, 0 ($sp)       # le tamanho do vetor informado
-	addi $sp, $sp, 4      # reposiciona $sp
+	addiu $sp, $sp, 4      # reposiciona $sp
 	la $t1, TamVetorDados # endereço do TamVetorDados
 	sw $t0, 0($t1)          # salva na memória
-
-	la  $a0, F2 		# vetor de padrao
+	
+	# vetor de padrao
+	la  $a0, F2 		
 	jal print
-
 	la $t0, VetorPadrao	# endereço da posicao inicial do vetor de dados
-	addi $sp, $sp, -4	# cria uma entrada na pilha
+	addiu $sp, $sp, -4	# cria uma entrada na pilha
 	sw $t0, 0 ($sp)		# endereço da posicao inicial do vetor de dados na pilha
 	jal carregavetor	# chama funcao para carrega vetor
-
 	lw $t0, 0 ($sp)       # le tamanho do vetor informado
-	addi $sp, $sp, 4      # reposiciona $sp
+	addiu $sp, $sp, 4      # reposiciona $sp
 	la $t1, TamVetorPadrao # endereço do TamVetorDados
 	sw $t0, 0($t1)          # salva na memória
 
 contabilizaLoop:
 	la $t1, posicaoDados
 	lw $t1, 0($t1)
-	
 	la $t2, TamVetorDados
 	lw $t2, 0($t2)
-	
 	la $t3, TamVetorPadrao
 	lw $t3, 0($t3)
-	
 	add $t4, $t1, $t3 
-	
 	bgt $t4, $t2 ,  contabilizaLoopFinalizado # condicao de parada do loop
-	
 	# contabilizaPadrao = contabvilizaPAdrao + Retorno o encontraPadrao
-	
-	# chama encontraPadrao
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-	
-	addi $sp, $sp, -20 	# cria cinco itens na pilha
+	addiu $sp, $sp, -20 	# cria cinco itens na pilha
 	la $t4, VetorDados	# ref do VetorDados
 	sw $t4, 0($sp) 		# ref do VetorDados
 	sw $t1, 4($sp)		# posicaoDados 
@@ -57,28 +45,20 @@ contabilizaLoop:
 	sw $zero, 12($sp) 	# posicao Padrão zero 
 	sw $t3, 16($sp) 	# TamVetorPadrao
 	jal encontraPadrao
-	
 	# pega retorno de encontraPadrao na pilha
 	lw $t1, 0 ($sp)		# carrega último item da pilha
-	addi $sp, $sp, 4 	# reposiciona $sp
-	
+	addiu $sp, $sp, 4 	# reposiciona $sp
 	# soma com contabilizaPadrao atual
 	la $t2, contabilizaPadrao # endereço 
 	lw $t3, 0($t2) # valor de contabilizaPadrao
 	add $t3, $t3, $t1 
-	
-	
 	sw $t3, ($t2)	# atualiza valor de contabilizaPadrão 
-	
 	# incrementa posicção dados
 	la $t3, posicaoDados
 	lw $t4, 0($t3) #valor de posicao dados 
 	addiu $t4, $t4, 1
-	sw  $t4, ($t3)
-	
+	sw  $t4, ($t3)	
 	j contabilizaLoop
-
-
 encontraPadrao: 
 	lw $t1, 0($sp) 	 	# ref do VetorDados
 	lw $t2, 4($sp) 		# posicaoDados 
@@ -86,28 +66,21 @@ encontraPadrao:
 	lw $t4, 12($sp) 	# posicao Padrão zero 
 	lw $t5, 16($sp)		# TamVetorPadrao
 	addiu $sp, $sp, 20 	# reposiciona $sp
-	
 	addiu $sp, $sp, -4 	# cria um item na pilha
 	sw $ra, 0($sp) 		# inclui o endeeço de retorno
-	
 	# calcula _vetDados[_posDados]
 	li $t7, 4
 	mul $t6, $t2, $t7
 	add $s0, $t1, $t6 
 	lw $s0, 0($s0)	
-	
 	# calcula _vetPadrao[_posPadrao]
 	li $t7, 4
 	mul $t6, $t4, $t7
 	add $s1, $t3, $t6 
 	lw $s1, 0($s1)	
-	
 	bne $s0, $s1, retornaZero 
-	
 	addiu $s2, $t5, -1	# calcula _tamPadrao - 1
-	
 	beq $t4, $s2, retornaUm
-	
 	addiu $sp, $sp, -20 	# cria cinco itens na pilha
 	sw $t1, 0($sp) 		# ref do VetorDados
 	addiu $t2, $t2, 1
@@ -116,46 +89,35 @@ encontraPadrao:
 	addiu $s5, $t4, 1
 	sw $s5, 12($sp) 	# posicao Padrão $t4 + 1
 	sw $t5, 16($sp) 	# TamVetorPadrao
-	
 	jal encontraPadrao
+	lw $ra, 4 ($sp)	
+	lw $t1, 0 ($sp)
+	addiu $sp, $sp, 8
+	addiu $sp, $sp -4 
+	sw $t1, 0($sp)
+	jr $ra
 	
-	lw $t1, 0 ($sp)	
-	lw $t2, 4 ($sp)	
-	addi $sp, $sp, 4
-	jr $t2
-	
-	 		
 retornaZero: 
-	lw $t1, 0 ($sp)		# carrega último $ra da pilha
-	addiu $sp, $sp, 4
-	addiu $sp, $sp, -4
-	sw $zero, 4($sp)	# adiciona valor zero à pilha 
-	jr $t1			# retorna
+	lw $ra, 0 ($sp)		# carrega último $ra da pilha
+	sw $zero, 0($sp)	# adiciona valor zero à pilha 
+	jr $ra			# retorna
 	
 retornaUm: 
-	lw $t1, 0 ($sp)		# carrega último $ra da pilha
-	addiu $sp, $sp, 4
-	addiu $sp, $sp, -4
+	lw $ra, 0 ($sp)		# carrega último $ra da pilha
 	li $t2, 1		# cria um valor um em $t2
 	sw $t2, 0($sp)		# adiciona valor zero à pilha 
-	jr $t1			# retorna
+	jr $ra			# retorna
 
 contabilizaLoopFinalizado:
-
 	la  $a0, F5
 	jal print
-	
 	la $t2, contabilizaPadrao 
 	lw $t3, 0($t2) # valor de contabilizaPadrao
-	
 	la $a0 , 0($t3)
 	jal printnum
-
 	j encerra
 
-
 carregavetor:
-
 	lw $t4, 0 ($sp)   # le endereco inicial do vetor
 	addiu $sp, $sp, 4  # reposiciona $sp
 	addiu $sp, $sp, -4	# cria uma entrada na pilha
@@ -181,11 +143,10 @@ carregadado:
 
 vetorcarregado:
 	lw $ra, 0 ($sp)		# lê o endereço de retorno da pilha
-	addi $sp, $sp, 4	# reposiciona $sp
-	addi $sp, $sp, -4	# cria uma posicao na pilha
+	addiu $sp, $sp, 4	# reposiciona $sp
+	addiu $sp, $sp, -4	# cria uma posicao na pilha
 	sw $t2, 0($sp)  	# adiciona à pilha o tamanho do vetor
 	jr $ra 		# retorna para a chamada original
-
 
 print: 			# funcao auxiliar para imprimir no console
 	li  	$v0, 4
@@ -205,16 +166,6 @@ nl:
 	syscall
 	jr $ra
 
-bar: 
-	li $v0, 4 
-	la $a0, NL 
-	syscall 
-	la $a0, BREAK 
-	syscall 
-	la $a0, NL 
-	syscall 
-	jr $ra	
-
 encerra:
 	li 	$v0, 10
 	syscall
@@ -229,10 +180,8 @@ contabilizaPadrao: .word 0	# contador de padroes localizados
 
 BREAK: .asciiz "======"
 NL: .asciiz "\n"
-F1: .asciiz "\n ========================================== \n\n\nVetor de dados \n"
+F1: .asciiz "\nVetor de dados \n"
 F2: .asciiz "\nVetor de padrao \n"
 F3: .asciiz "Informe o numero de dados a serem inseridos no vetor: "
 F4: .asciiz "Informe um dado a ser inserido no vetor: "
 F5: .asciiz "\nQuantidade de padroes encontrados: "
-
-DEBUG: .asciiz "\n ====> DEBUG <===== \n"
