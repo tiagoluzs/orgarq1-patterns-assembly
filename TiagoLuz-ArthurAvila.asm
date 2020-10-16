@@ -180,13 +180,11 @@ carregadado:
 	j carregadado
 
 vetorcarregado:
-	la  $a0, DEBUG
-	jal print
-	lw $t5, 0 ($sp)		# lê o endereço de retorno da pilha
-#	addi $sp, $sp, 4	# reposiciona $sp
-#	addi $sp, $sp, -4	# cria uma posicao na pilha
+	lw $ra, 0 ($sp)		# lê o endereço de retorno da pilha
+	addi $sp, $sp, 4	# reposiciona $sp
+	addi $sp, $sp, -4	# cria uma posicao na pilha
 	sw $t2, 0($sp)  	# adiciona à pilha o tamanho do vetor
-	jr $t5 		# retorna para a chamada original
+	jr $ra 		# retorna para a chamada original
 
 
 print: 			# funcao auxiliar para imprimir no console
